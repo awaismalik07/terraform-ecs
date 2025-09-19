@@ -1,0 +1,3 @@
+variable "vpcCidr" {
+    type = string  
+}
