@@ -65,3 +65,45 @@ resource "aws_nat_gateway" "NATGateway" {
     }       
 }
 
+#Public Route table for Public Subnet
+resource "aws_route_table" "PublicRouteTable" {
+    vpc_id          = aws_vpc.Vpc.id
+
+    route {
+        cidr_block  = "0.0.0.0/0"
+        gateway_id  = aws_internet_gateway.InternetGateway.id
+    }
+
+    tags = {
+        Name        = "${var.owner}-${var.env}-PublicRouteTable"
+    }
+}
+
+#Private Route Table for Private Subnet
+resource "aws_route_table" "PrivateRouteTable" {
+    vpc_id          = aws_vpc.Vpc.id
+
+    route {
+        cidr_block  = "0.0.0.0/0"
+        gateway_id  = aws_nat_gateway.NATGateway.id
+    }
+
+    tags = {
+        Name        = "${var.owner}-${var.env}-PrivateRouteTable"
+    }
+}
+
+#Public and Private Route Table Association with respective subnets
+resource "aws_route_table_association" "PublicRouteTableAssociation" {
+    count           = 2
+    route_table_id  = aws_route_table.PublicRouteTable.id
+    subnet_id       = aws_subnet.PublicSubnets[count.index].id
+}
+
+resource "aws_route_table_association" "PublicRouteTableAssociation" {
+    count           = 2
+    route_table_id  = aws_route_table.PrivateRouteTable.id
+    subnet_id       = aws_subnet.PrivateSubnets[count.index].id
+}
+
+
