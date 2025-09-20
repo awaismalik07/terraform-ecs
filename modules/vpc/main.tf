@@ -100,7 +100,7 @@ resource "aws_route_table_association" "PublicRouteTableAssociation" {
     subnet_id       = aws_subnet.PublicSubnets[count.index].id
 }
 
-resource "aws_route_table_association" "PublicRouteTableAssociation" {
+resource "aws_route_table_association" "PrivateRouteTableAssociation" {
     count           = 2
     route_table_id  = aws_route_table.PrivateRouteTable.id
     subnet_id       = aws_subnet.PrivateSubnets[count.index].id
