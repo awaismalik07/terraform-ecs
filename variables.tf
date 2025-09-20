@@ -6,8 +6,8 @@ variable "region" {
 #Variables for Environment
 variable "environment" {
   type = object({
-    env = "test"
-    owner = "awais"
+    env = string
+    owner = string
   })
 }
 
