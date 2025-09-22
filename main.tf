@@ -9,6 +9,8 @@ module "vpc" {
 
 module "ecr" {
     source = "./modules/ecr"
-    
-  
+}
+
+module "ecs" {
+    source = "./modules/ecs"
 }
