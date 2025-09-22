@@ -6,3 +6,9 @@ module "vpc" {
     env     = var.environment.env
     owner   = var.environment.owner
 }
+
+module "ecr" {
+    source = "./modules/ecr"
+    
+  
+}
