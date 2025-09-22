@@ -1,6 +1,6 @@
 resource "aws_ecr_repository" "AppECR" {
     name                    = "awais-test-app"
-    image_tag_mutability    = "IMMUTABLE"
+    image_tag_mutability    = "MUTABLE"
     
     image_scanning_configuration {
       scan_on_push          = true
@@ -10,7 +10,7 @@ resource "aws_ecr_repository" "AppECR" {
 
 resource "aws_ecr_repository" "StaticECR" {
     name                    = "awais-test-static"
-    image_tag_mutability    = "IMMUTABLE"
+    image_tag_mutability    = "MUTABLE"
     
     image_scanning_configuration {
       scan_on_push          = true
@@ -20,7 +20,7 @@ resource "aws_ecr_repository" "StaticECR" {
 
 resource "aws_ecr_repository" "ProxyECR" {
     name                    = "awais-test-proxy"
-    image_tag_mutability    = "IMMUTABLE"
+    image_tag_mutability    = "MUTABLE"
     
     image_scanning_configuration {
       scan_on_push          = true
