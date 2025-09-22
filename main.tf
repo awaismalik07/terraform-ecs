@@ -15,8 +15,9 @@ module "ecr" {
 }
 
 module "ecs" {
-    source = "./modules/ecs"
+    source  = "./modules/ecs"
     
+    VpcId   = module.vpc.VpcId
     env     = var.environment.env
     owner   = var.environment.owner
 }
