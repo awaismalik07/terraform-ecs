@@ -8,6 +8,26 @@ resource "aws_ecr_repository" "AppECR" {
     }
 }
 
+resource "aws_ecr_repository" "StaticECR" {
+    name = "awais-test-static"
+    image_tag_mutability = "IMMUTABLE"
+    
+    image_scanning_configuration {
+      scan_on_push = true
+
+    }
+}
+
+resource "aws_ecr_repository" "ProxyECR" {
+    name = "awais-test-proxy"
+    image_tag_mutability = "IMMUTABLE"
+    
+    image_scanning_configuration {
+      scan_on_push = true
+
+    }
+}
+
 data "aws_caller_identity" "current" {}
 
 resource "null_resource" "docker_build_and_push" {
@@ -20,15 +40,27 @@ resource "null_resource" "docker_build_and_push" {
       # Build + push app
       docker build -t ${aws_ecr_repository.AppECR.repository_url}:latest ${path.module}/../../application/app
       docker push ${aws_ecr_repository.AppECR.repository_url}:latest
+
+      #Build + push static
+      docker build -t ${aws_ecr_repository.StaticECR.repository_url}:latest ${path.module}/../../application/static
+      docker push ${aws_ecr_repository.StaticECR.repository_url}:latest
+
+      #Build + push proxy
+      docker build -t ${aws_ecr_repository.ProxyECR.repository_url}:latest ${path.module}/../../application/proxy
+      docker push ${aws_ecr_repository.ProxyECR.repository_url}:latest
     EOT
   }
 
   triggers = {
     # rerun when any Dockerfile changes
     app_hash    = filesha256("${path.module}/../../application/app/dockerfile")
+    static_hash    = filesha256("${path.module}/../../application/static/dockerfile")
+    proxy_hash    = filesha256("${path.module}/../../application/proxy/dockerfile")
   }
 
   depends_on = [
-    aws_ecr_repository.AppECR
+    aws_ecr_repository.AppECR,
+    aws_ecr_repository.StaticECR,
+    aws_ecr_repository.ProxyECR
   ]
 }
