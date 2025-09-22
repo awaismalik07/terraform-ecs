@@ -1,29 +1,29 @@
 resource "aws_ecr_repository" "AppECR" {
-    name = "awais-test-app"
-    image_tag_mutability = "IMMUTABLE"
+    name                    = "awais-test-app"
+    image_tag_mutability    = "IMMUTABLE"
     
     image_scanning_configuration {
-      scan_on_push = true
+      scan_on_push          = true
 
     }
 }
 
 resource "aws_ecr_repository" "StaticECR" {
-    name = "awais-test-static"
-    image_tag_mutability = "IMMUTABLE"
+    name                    = "awais-test-static"
+    image_tag_mutability    = "IMMUTABLE"
     
     image_scanning_configuration {
-      scan_on_push = true
+      scan_on_push          = true
 
     }
 }
 
 resource "aws_ecr_repository" "ProxyECR" {
-    name = "awais-test-proxy"
-    image_tag_mutability = "IMMUTABLE"
+    name                    = "awais-test-proxy"
+    image_tag_mutability    = "IMMUTABLE"
     
     image_scanning_configuration {
-      scan_on_push = true
+      scan_on_push          = true
 
     }
 }
@@ -54,8 +54,8 @@ resource "null_resource" "docker_build_and_push" {
   triggers = {
     # rerun when any Dockerfile changes
     app_hash    = filesha256("${path.module}/../../application/app/dockerfile")
-    static_hash    = filesha256("${path.module}/../../application/static/dockerfile")
-    proxy_hash    = filesha256("${path.module}/../../application/proxy/dockerfile")
+    static_hash = filesha256("${path.module}/../../application/static/dockerfile")
+    proxy_hash  = filesha256("${path.module}/../../application/proxy/dockerfile")
   }
 
   depends_on = [
