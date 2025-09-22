@@ -26,6 +26,9 @@ variable "StaticSGId" {
     type = string
 }
 
+variable "ProxySGId" {
+    type = string
+}
 
 variable "owner" {
     type = string

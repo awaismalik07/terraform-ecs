@@ -17,3 +17,7 @@ output "AppSGId" {
 output "StaticSGId" {
   value = aws_security_group.StaticSG.id
 }
+
+output "ProxySGId" {
+  value = aws_security_group.ProxySG.id
+}

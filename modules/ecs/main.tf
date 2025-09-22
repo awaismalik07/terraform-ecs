@@ -96,6 +96,27 @@ resource "aws_ecs_task_definition" "StaticTask" {
     ])
 }
 
+resource "aws_ecs_task_definition" "ProxyTask" {
+    family = "${var.owner}-${var.env}-Proxy"
+    network_mode = "awsvpc"
+    requires_compatibilities = ["FARGATE"]
+    cpu                      = 1024
+    memory                   = 2048
+    execution_role_arn = var.ECSTaskExcecutionRoleArn
+    container_definitions = jsonencode([
+        {
+            name = "Proxy"
+            image = "${var.ProxyRepo}:latest"
+            essential = true
+            portMappings = [
+                {
+                    containerPort = 80
+                }
+            ]
+        }
+    ])
+}
+
 resource "aws_ecs_service" "AppService" {
     name = "${var.owner}-${var.env}-App-Service"
     cluster = aws_ecs_cluster.ECSCluster.id
@@ -132,4 +153,17 @@ resource "aws_ecs_service" "StaticService" {
     }
 }
 
+resource "aws_ecs_service" "ProxyService" {
+    name = "${var.owner}-${var.env}-Proxy-Service"
+    cluster = aws_ecs_cluster.ECSCluster.id
+    task_definition = aws_ecs_task_definition.ProxyTask.arn
+    desired_count = 1
+    launch_type = "FARGATE"
+
+    network_configuration {
+        subnets = var.PublicSubnetIds
+        security_groups = ["${var.ProxySGId}"]
+        assign_public_ip = true
+    }
+}
 
