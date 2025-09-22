@@ -22,6 +22,11 @@ variable "AppSGId" {
     type = string
 }
 
+variable "StaticSGId" {
+    type = string
+}
+
+
 variable "owner" {
     type = string
 }

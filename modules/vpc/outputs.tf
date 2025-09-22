@@ -13,3 +13,7 @@ output "PrivateSubnetIds" {
 output "AppSGId" {
   value = aws_security_group.AppSG.id
 }
+
+output "StaticSGId" {
+  value = aws_security_group.StaticSG.id
+}

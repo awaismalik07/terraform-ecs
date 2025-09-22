@@ -75,6 +75,27 @@ resource "aws_ecs_task_definition" "AppTask" {
     ])
 }
 
+resource "aws_ecs_task_definition" "StaticTask" {
+    family = "${var.owner}-${var.env}-Static"
+    network_mode = "awsvpc"
+    requires_compatibilities = ["FARGATE"]
+    cpu                      = 1024
+    memory                   = 2048
+    execution_role_arn = var.ECSTaskExcecutionRoleArn
+    container_definitions = jsonencode([
+        {
+            name = "Static"
+            image = "${var.StaticRepo}:latest"
+            essential = true
+            portMappings = [
+                {
+                    containerPort = 80
+                }
+            ]
+        }
+    ])
+}
+
 resource "aws_ecs_service" "AppService" {
     name = "${var.owner}-${var.env}-App-Service"
     cluster = aws_ecs_cluster.ECSCluster.id
@@ -89,6 +110,24 @@ resource "aws_ecs_service" "AppService" {
     network_configuration {
         subnets = var.PublicSubnetIds
         security_groups = ["${var.AppSGId}"]
+        assign_public_ip = true
+    }
+}
+
+resource "aws_ecs_service" "StaticService" {
+    name = "${var.owner}-${var.env}-Static-Service"
+    cluster = aws_ecs_cluster.ECSCluster.id
+    task_definition = aws_ecs_task_definition.StaticTask.arn
+    desired_count = 1
+    launch_type = "FARGATE"
+
+    service_registries {
+        registry_arn = aws_service_discovery_service.StaticService.arn
+    }
+
+    network_configuration {
+        subnets = var.PublicSubnetIds
+        security_groups = ["${var.StaticSGId}"]
         assign_public_ip = true
     }
 }

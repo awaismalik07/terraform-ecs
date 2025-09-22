@@ -31,6 +31,7 @@ module "ecs" {
     ProxyRepo = module.ecr.ProxyRepo
     PublicSubnetIds = module.vpc.PublicSubnetIds
     AppSGId = module.vpc.AppSGId
+    StaticSGId = module.vpc.StaticSGId
     ECSTaskExcecutionRoleArn = module.iam.ECSTaskExcecutionRoleArn
 
     env     = var.environment.env
