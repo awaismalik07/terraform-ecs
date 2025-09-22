@@ -16,8 +16,14 @@ module "ecr" {
 
 module "ecs" {
     source  = "./modules/ecs"
-    
+
     VpcId   = module.vpc.VpcId
+
+    AppRepo = module.ecr.AppRepo
+    StaticRepo = module.ecr.StaticRepo
+    ProxyRepo = module.ecr.ProxyRepo
+    PublicSubnetIds = module.vpc.PublicSubnetIds
+
     env     = var.environment.env
     owner   = var.environment.owner
 }

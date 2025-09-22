@@ -1,12 +1,3 @@
-#Cluster
-resource "aws_ecs_cluster" "ECSCluster" {
-    name    = "${owner}-${env}-Cluster"
-    
-    tags = {
-      name  = "${owner}-${env}-Cluster"
-    }
-}
-
 #Service Discovery to be used by proxy
 resource "aws_service_discovery_private_dns_namespace" "ServiceDiscoveryNamespace" {
     name = "${var.owner}.local"
@@ -42,3 +33,61 @@ resource "aws_service_discovery_service" "StaticService" {
     }   
   
 }
+
+#Cluster
+resource "aws_ecs_cluster" "ECSCluster" {
+    name    = "${owner}-${env}-Cluster"
+    
+    tags = {
+      Name  = "${owner}-${env}-Cluster"
+    }
+}
+
+#Task definations
+resource "aws_ecs_task_definition" "AppTask" {
+    family = "${owner}-${env}-App"
+    network_mode = "awsvpc"
+    requires_compatibilities = ["FARGATE"]
+    container_definitions = jsonencode([
+        {
+            name = "App"
+            image = "${var.AppRepo}:latest"
+            essential = true
+            portMappings = [
+                {
+                    containerPort = 5000
+                }
+            ]
+        },
+        {
+            name = "Redis"
+            image = "redis:alpine"
+            essential = true
+            portMappings = [
+                {
+                    containerPort = 6379
+                }
+            ]
+        }
+    ])
+}
+
+resource "aws_ecs_service" "AppService" {
+    name = "${owner}-${env}-App-Service"
+    cluster = aws_ecs_cluster.ECSCluster.id
+    task_definition = aws_ecs_task_definition.AppTask.arn
+    desired_count = 1
+    launch_type = "FARGATE"
+
+    service_registries {
+        registry_arn = aws_service_discovery_service.AppService.arn
+    }
+
+    network_configuration {
+        subnets = var.PublicSubnetIds
+        security_groups = ["${var.AppSGId}"]
+        assign_public_ip = true
+    }
+}
+
+

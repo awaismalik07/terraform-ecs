@@ -9,3 +9,7 @@ output "PublicSubnetIds" {
 output "PrivateSubnetIds" {
     value = aws_subnet.PrivateSubnets.*.id
 }
+
+output "AppSGId" {
+  value = aws_security_group.AppSG.id
+}

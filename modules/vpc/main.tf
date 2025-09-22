@@ -106,4 +106,35 @@ resource "aws_route_table_association" "PrivateRouteTableAssociation" {
     subnet_id       = aws_subnet.PrivateSubnets[count.index].id
 }
 
+#Security groups
+resource "aws_security_group" "AppSG" {
+    vpc_id = aws_vpc.Vpc.id
+    name = "${var.owner}-${var.env}-AppSG"
+    description = "Security Group for Flask App"
+
+    tags = {
+      Name = "${var.owner}-${var.env}-AppSG"
+    }
+  
+}
+
+resource "aws_security_group_rule" "AppSGIngress" {
+    security_group_id = aws_security_group.AppSG.id
+    type = "ingress"
+    from_port = 5000
+    to_port = 5000
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol = "tcp"
+  
+}
+
+resource "aws_security_group_rule" "AppSGEgress" {
+    security_group_id = aws_security_group.AppSG.id
+    type = "egress"
+    from_port = 0
+    to_port = 0
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol = "-1"
+  
+}
 
