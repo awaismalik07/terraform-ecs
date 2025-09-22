@@ -14,6 +14,13 @@ module "ecr" {
     owner   = var.environment.owner
 }
 
+module "iam" {
+    source = "./modules/iam"
+    
+    env     = var.environment.env
+    owner   = var.environment.owner
+}
+
 module "ecs" {
     source  = "./modules/ecs"
 
@@ -23,6 +30,8 @@ module "ecs" {
     StaticRepo = module.ecr.StaticRepo
     ProxyRepo = module.ecr.ProxyRepo
     PublicSubnetIds = module.vpc.PublicSubnetIds
+    AppSGId = module.vpc.AppSGId
+    ECSTaskExcecutionRoleArn = module.iam.ECSTaskExcecutionRoleArn
 
     env     = var.environment.env
     owner   = var.environment.owner

@@ -36,18 +36,21 @@ resource "aws_service_discovery_service" "StaticService" {
 
 #Cluster
 resource "aws_ecs_cluster" "ECSCluster" {
-    name    = "${owner}-${env}-Cluster"
+    name    = "${var.owner}-${var.env}-Cluster"
     
     tags = {
-      Name  = "${owner}-${env}-Cluster"
+      Name  = "${var.owner}-${var.env}-Cluster"
     }
 }
 
 #Task definations
 resource "aws_ecs_task_definition" "AppTask" {
-    family = "${owner}-${env}-App"
+    family = "${var.owner}-${var.env}-App"
     network_mode = "awsvpc"
     requires_compatibilities = ["FARGATE"]
+    cpu                      = 1024
+    memory                   = 2048
+    execution_role_arn = var.ECSTaskExcecutionRoleArn
     container_definitions = jsonencode([
         {
             name = "App"
@@ -73,7 +76,7 @@ resource "aws_ecs_task_definition" "AppTask" {
 }
 
 resource "aws_ecs_service" "AppService" {
-    name = "${owner}-${env}-App-Service"
+    name = "${var.owner}-${var.env}-App-Service"
     cluster = aws_ecs_cluster.ECSCluster.id
     task_definition = aws_ecs_task_definition.AppTask.arn
     desired_count = 1

@@ -29,3 +29,7 @@ variable "owner" {
 variable "env" {
     type = string
 }
+
+variable "ECSTaskExcecutionRoleArn" {
+  type = string
+}
