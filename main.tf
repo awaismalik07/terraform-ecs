@@ -9,8 +9,14 @@ module "vpc" {
 
 module "ecr" {
     source = "./modules/ecr"
+
+    env     = var.environment.env
+    owner   = var.environment.owner
 }
 
 module "ecs" {
     source = "./modules/ecs"
+    
+    env     = var.environment.env
+    owner   = var.environment.owner
 }
