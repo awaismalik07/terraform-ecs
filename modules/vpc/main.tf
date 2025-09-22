@@ -169,3 +169,34 @@ resource "aws_security_group_rule" "StaticSGEgress" {
   
 }
 
+resource "aws_security_group" "ProxySG" {
+    vpc_id = aws_vpc.Vpc.id
+    name = "${var.owner}-${var.env}-ProxySG"
+    description = "Security Group for Proxy"
+
+    tags = {
+      Name = "${var.owner}-${var.env}-ProxySG"
+    }
+  
+}
+
+resource "aws_security_group_rule" "ProxySGIngress" {
+    security_group_id = aws_security_group.ProxySG.id
+    type = "ingress"
+    from_port = 80
+    to_port = 80
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol = "tcp"
+  
+}
+
+resource "aws_security_group_rule" "ProxySGEgress" {
+    security_group_id = aws_security_group.ProxySG.id
+    type = "egress"
+    from_port = 0
+    to_port = 0
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol = "-1"
+  
+}
+
