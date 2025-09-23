@@ -45,8 +45,15 @@ module "ecs" {
     ECSTaskExcecutionRoleArn = module.iam.ECSTaskExcecutionRoleArn
     ALBTgArn = module.alb.ALBTgArn
     ALBArn = module.alb.ALBArn
-    ALBListenerArn = module.alb.ALBListenerArn
 
     env     = var.environment.env
     owner   = var.environment.owner
+}
+
+module "autoscaling" {
+    source = "./modules/autoscaling"
+    env     = var.environment.env
+    owner   = var.environment.owner
+    ECSClusterName = module.ecs.ECSClusterName
+    ProxyServiceName = module.ecs.ProxyServiceName
 }

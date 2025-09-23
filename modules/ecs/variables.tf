@@ -44,10 +44,6 @@ variable "ECSTaskExcecutionRoleArn" {
   type = string
 }
 
-variable "ALBListenerArn" {
-  type = string
-}
-
 variable "ALBArn" {
   type = string
 }
