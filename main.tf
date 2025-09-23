@@ -21,6 +21,11 @@ module "iam" {
     owner   = var.environment.owner
 }
 
+module "alb" {
+    source = "./modules/alb"
+  
+}
+
 module "ecs" {
     source  = "./modules/ecs"
 
