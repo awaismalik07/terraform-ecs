@@ -44,6 +44,8 @@ module "ecs" {
     ProxySGId = module.vpc.ProxySGId
     ECSTaskExcecutionRoleArn = module.iam.ECSTaskExcecutionRoleArn
     ALBTgArn = module.alb.ALBTgArn
+    ALBArn = module.alb.ALBArn
+    ALBListenerArn = module.alb.ALBListenerArn
 
     env     = var.environment.env
     owner   = var.environment.owner

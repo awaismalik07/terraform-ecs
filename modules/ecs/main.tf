@@ -172,7 +172,8 @@ resource "aws_ecs_service" "ProxyService" {
 
     depends_on = [ 
         aws_ecs_service.AppService,
-        aws_ecs_service.StaticService
+        aws_ecs_service.StaticService,
+        var.ALBArn
      ]
 }
 
