@@ -166,6 +166,12 @@ resource "aws_ecs_service" "ProxyService" {
         assign_public_ip = true
     }
 
+    load_balancer {
+      container_name = "Proxy"
+      container_port = 80
+      target_group_arn = var.ALBTgArn
+    }
+
     depends_on = [ 
         aws_ecs_service.AppService,
         aws_ecs_service.StaticService
