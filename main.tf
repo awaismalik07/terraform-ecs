@@ -23,6 +23,7 @@ module "iam" {
 
 module "alb" {
     source = "./modules/alb"
+    VpcId   = module.vpc.VpcId
     ALBSGId = module.vpc.ALBSGId
     PublicSubnetIds = module.vpc.PublicSubnetIds
     env     = var.environment.env

@@ -165,5 +165,10 @@ resource "aws_ecs_service" "ProxyService" {
         security_groups = ["${var.ProxySGId}"]
         assign_public_ip = true
     }
+
+    depends_on = [ 
+        aws_ecs_service.AppService,
+        aws_ecs_service.StaticService
+     ]
 }
 
