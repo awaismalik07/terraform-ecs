@@ -21,3 +21,7 @@ output "StaticSGId" {
 output "ProxySGId" {
   value = aws_security_group.ProxySG.id
 }
+
+output "ALBSGId" {
+  value = aws_security_group.ALBSG.id
+}

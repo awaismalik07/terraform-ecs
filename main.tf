@@ -23,7 +23,10 @@ module "iam" {
 
 module "alb" {
     source = "./modules/alb"
-  
+    ALBSGId = module.vpc.ALBSGId
+    PublicSubnetIds = module.vpc.PublicSubnetIds
+    env     = var.environment.env
+    owner   = var.environment.owner
 }
 
 module "ecs" {
