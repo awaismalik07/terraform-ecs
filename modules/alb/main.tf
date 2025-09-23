@@ -7,7 +7,7 @@ resource "aws_lb" "ApplicationLoadBalancer" {
 
 
   tags = {
-    Environment = "${var.env}"
+    Name               = "${var.owner}-${var.env}-ALB"
   }
 }
 
