@@ -1,11 +1,14 @@
-#VPC
 resource "aws_vpc" "Vpc" {
-    cidr_block  = var.vpcCidr
+  cidr_block = var.vpcCidr
 
-    tags = {
-        Name    = "${var.owner}-${var.env}-Vpc"
-    }   
+  enable_dns_support   = true   
+  enable_dns_hostnames = true   
+
+  tags = {
+    Name = "${var.owner}-${var.env}-Vpc"
+  }
 }
+
 
 #Get All Availability Zones
 data "aws_availability_zones" "AZs" {

@@ -8,13 +8,12 @@ resource "aws_service_discovery_service" "AppService" {
     name = "app"
 
     dns_config {
-      namespace_id = aws_service_discovery_private_dns_namespace.ServiceDiscoveryNamespace.id
+        namespace_id = aws_service_discovery_private_dns_namespace.ServiceDiscoveryNamespace.id
       
-      dns_records {
-        ttl = 15
+        dns_records {
+        ttl = 60
         type = "A"
-      }
-    
+        }
     }   
   
 }
@@ -23,13 +22,12 @@ resource "aws_service_discovery_service" "StaticService" {
     name = "static"
 
     dns_config {
-      namespace_id = aws_service_discovery_private_dns_namespace.ServiceDiscoveryNamespace.id
+        namespace_id = aws_service_discovery_private_dns_namespace.ServiceDiscoveryNamespace.id
       
-      dns_records {
-        ttl = 15
+        dns_records {
+        ttl = 60
         type = "A"
-      }
-    
+        }
     }   
   
 }
