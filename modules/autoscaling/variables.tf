@@ -13,3 +13,24 @@ variable "ECSClusterName" {
 variable "ProxyServiceName" {
     type = string
 }
+
+variable "MinCapacity" {
+  type = number
+}
+
+variable "MaxCapacity" {
+  type = number
+}
+
+variable "AvgCputoMaintain" {
+  type = number
+}
+
+variable "ScaleInCooldown" {
+    type = number
+}
+
+variable "ScaleOutCooldown" {
+    type = number
+  
+}

@@ -32,12 +32,12 @@ resource "aws_lb_target_group" "AlbTargetGroup" {
 
   health_check {
     protocol            = "HTTP"
-    path                = "/api/"
-    matcher             = "200-399"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 3
-    unhealthy_threshold = 5
+    path                = var.HealthCheckPath
+    matcher             = var.HealthyCodes
+    interval            = var.HealthCheckInterval
+    timeout             = var.Timeout
+    healthy_threshold   = var.HealthyThreshold
+    unhealthy_threshold = var.UnhealthThreshold
   }
 
 }

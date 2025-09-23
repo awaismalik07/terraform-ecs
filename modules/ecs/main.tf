@@ -46,8 +46,8 @@ resource "aws_ecs_task_definition" "AppTask" {
     family = "${var.owner}-${var.env}-App"
     network_mode = "awsvpc"
     requires_compatibilities = ["FARGATE"]
-    cpu                      = 1024
-    memory                   = 2048
+    cpu                      = var.ECSTaskCpu
+    memory                   = var.ECSTaskMemory
     execution_role_arn = var.ECSTaskExcecutionRoleArn
     container_definitions = jsonencode([
         {
@@ -77,8 +77,8 @@ resource "aws_ecs_task_definition" "StaticTask" {
     family = "${var.owner}-${var.env}-Static"
     network_mode = "awsvpc"
     requires_compatibilities = ["FARGATE"]
-    cpu                      = 1024
-    memory                   = 2048
+    cpu                      = var.ECSTaskCpu
+    memory                   = var.ECSTaskMemory
     execution_role_arn = var.ECSTaskExcecutionRoleArn
     container_definitions = jsonencode([
         {
@@ -98,8 +98,8 @@ resource "aws_ecs_task_definition" "ProxyTask" {
     family = "${var.owner}-${var.env}-Proxy"
     network_mode = "awsvpc"
     requires_compatibilities = ["FARGATE"]
-    cpu                      = 1024
-    memory                   = 2048
+    cpu                      = var.ECSTaskCpu
+    memory                   = var.ECSTaskMemory
     execution_role_arn = var.ECSTaskExcecutionRoleArn
     container_definitions = jsonencode([
         {
@@ -115,11 +115,12 @@ resource "aws_ecs_task_definition" "ProxyTask" {
     ])
 }
 
+#services Definations
 resource "aws_ecs_service" "AppService" {
     name = "${var.owner}-${var.env}-App-Service"
     cluster = aws_ecs_cluster.ECSCluster.id
     task_definition = aws_ecs_task_definition.AppTask.arn
-    desired_count = 1
+    desired_count = var.AppServiceDesiredCount
     launch_type = "FARGATE"
 
     service_registries {
@@ -127,9 +128,8 @@ resource "aws_ecs_service" "AppService" {
     }
 
     network_configuration {
-        subnets = var.PublicSubnetIds
+        subnets = var.PrivateSubnetIds
         security_groups = ["${var.AppSGId}"]
-        assign_public_ip = true
     }
 }
 
@@ -137,7 +137,7 @@ resource "aws_ecs_service" "StaticService" {
     name = "${var.owner}-${var.env}-Static-Service"
     cluster = aws_ecs_cluster.ECSCluster.id
     task_definition = aws_ecs_task_definition.StaticTask.arn
-    desired_count = 1
+    desired_count = var.StaticServiceDesiredCount
     launch_type = "FARGATE"
 
     service_registries {
@@ -145,9 +145,8 @@ resource "aws_ecs_service" "StaticService" {
     }
 
     network_configuration {
-        subnets = var.PublicSubnetIds
+        subnets = var.PrivateSubnetIds
         security_groups = ["${var.StaticSGId}"]
-        assign_public_ip = true
     }
 }
 
@@ -155,13 +154,12 @@ resource "aws_ecs_service" "ProxyService" {
     name = "${var.owner}-${var.env}-Proxy-Service"
     cluster = aws_ecs_cluster.ECSCluster.id
     task_definition = aws_ecs_task_definition.ProxyTask.arn
-    desired_count = 2
+    desired_count = var.ProxyServiceDesiredCount
     launch_type = "FARGATE"
 
     network_configuration {
-        subnets = var.PublicSubnetIds
+        subnets = var.PrivateSubnetIds
         security_groups = ["${var.ProxySGId}"]
-        assign_public_ip = true
     }
 
     load_balancer {

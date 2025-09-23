@@ -10,12 +10,31 @@ variable "StaticRepo" {
     type = string
 }
 
+variable "ECSTaskCpu" {
+  type = number
+}
+
+variable "ECSTaskMemory" {
+  type = number
+}
+
 variable "ProxyRepo" {
     type = string
 }
 
-variable "PublicSubnetIds" {
+variable "PrivateSubnetIds" {
     type = list(string)
+}
+
+variable "AppServiceDesiredCount" {
+  type = number
+}
+variable "StaticServiceDesiredCount" {
+  type = number
+}
+variable "ProxyServiceDesiredCount" {
+  type = number
+  
 }
 
 variable "AppSGId" {

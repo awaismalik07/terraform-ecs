@@ -1,6 +1,6 @@
 resource "aws_ecr_repository" "AppECR" {
     name                    = "${var.owner}-${var.env}-app"
-    image_tag_mutability    = "MUTABLE"
+    image_tag_mutability    = var.ImageTagMutibility
     
     image_scanning_configuration {
       scan_on_push          = true
@@ -10,7 +10,7 @@ resource "aws_ecr_repository" "AppECR" {
 
 resource "aws_ecr_repository" "StaticECR" {
     name                    = "${var.owner}-${var.env}-static"
-    image_tag_mutability    = "MUTABLE"
+    image_tag_mutability    = var.ImageTagMutibility
     
     image_scanning_configuration {
       scan_on_push          = true
@@ -20,7 +20,7 @@ resource "aws_ecr_repository" "StaticECR" {
 
 resource "aws_ecr_repository" "ProxyECR" {
     name                    = "${var.owner}-${var.env}-proxy"
-    image_tag_mutability    = "MUTABLE"
+    image_tag_mutability    = var.ImageTagMutibility
     
     image_scanning_configuration {
       scan_on_push          = true

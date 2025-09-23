@@ -1,6 +1,6 @@
 resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity       = 4
-  min_capacity       = 1
+  max_capacity       = var.MaxCapacity
+  min_capacity       = var.MinCapacity
   resource_id        = "service/${var.ECSClusterName}/${var.ProxyServiceName}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
@@ -18,8 +18,8 @@ resource "aws_appautoscaling_policy" "ecs_target_tracking" {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    target_value       = 10   # try to keep CPU around 10%
-    scale_in_cooldown  = 60   # wait 60s before scaling in
-    scale_out_cooldown = 60   # wait 60s before scaling out
+    target_value       = var.AvgCputoMaintain   
+    scale_in_cooldown  = var.ScaleInCooldown   
+    scale_out_cooldown = var.ScaleOutCooldown  
   }
 }

@@ -5,3 +5,7 @@ variable "owner" {
 variable "env" {
     type = string
 }
+
+variable "ImageTagMutibility" {
+    type = string
+}
