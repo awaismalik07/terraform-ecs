@@ -21,10 +21,10 @@ data "aws_availability_zones" "AZs" {
 
 #Creates two public subnets in first two AZs
 resource "aws_subnet" "PublicSubnets" {
-    count                   = 2
+    count                   = var.NoOfSubnets
     vpc_id                  = aws_vpc.Vpc.id
     availability_zone       = data.aws_availability_zones.AZs.names[count.index]
-    cidr_block              = cidrsubnet(aws_vpc.Vpc.cidr_block, 8, count.index)
+    cidr_block              = cidrsubnet(aws_vpc.Vpc.cidr_block, var.SubnetCidrBits, count.index)
     map_public_ip_on_launch = true
 
     tags = {
@@ -34,10 +34,10 @@ resource "aws_subnet" "PublicSubnets" {
 
 #Creates two private subnets in first two AZs
 resource "aws_subnet" "PrivateSubnets" {
-    count                   = 2
+    count                   = var.NoOfSubnets
     vpc_id                  = aws_vpc.Vpc.id
     availability_zone       = data.aws_availability_zones.AZs.names[count.index]
-    cidr_block              = cidrsubnet(aws_vpc.Vpc.cidr_block, 8, count.index + 2)
+    cidr_block              = cidrsubnet(aws_vpc.Vpc.cidr_block, var.SubnetCidrBits, count.index + var.NoOfSubnets)
     
     tags = {
       Name                  = "${var.owner}-${var.env}-PrivateSubnet-${data.aws_availability_zones.AZs.names[count.index]}"
@@ -98,18 +98,19 @@ resource "aws_route_table" "PrivateRouteTable" {
 
 #Public and Private Route Table Association with respective subnets
 resource "aws_route_table_association" "PublicRouteTableAssociation" {
-    count           = 2
+    count           = var.NoOfSubnets
     route_table_id  = aws_route_table.PublicRouteTable.id
     subnet_id       = aws_subnet.PublicSubnets[count.index].id
 }
 
 resource "aws_route_table_association" "PrivateRouteTableAssociation" {
-    count           = 2
+    count           = var.NoOfSubnets
     route_table_id  = aws_route_table.PrivateRouteTable.id
     subnet_id       = aws_subnet.PrivateSubnets[count.index].id
 }
 
 #Security groups
+#App Security Group
 resource "aws_security_group" "AppSG" {
     vpc_id = aws_vpc.Vpc.id
     name = "${var.owner}-${var.env}-AppSG"
@@ -141,6 +142,7 @@ resource "aws_security_group_rule" "AppSGEgress" {
   
 }
 
+#Static Security Group
 resource "aws_security_group" "StaticSG" {
     vpc_id = aws_vpc.Vpc.id
     name = "${var.owner}-${var.env}-StaticSG"
@@ -172,6 +174,7 @@ resource "aws_security_group_rule" "StaticSGEgress" {
   
 }
 
+#Proxy Security Group
 resource "aws_security_group" "ProxySG" {
     vpc_id = aws_vpc.Vpc.id
     name = "${var.owner}-${var.env}-ProxySG"
@@ -203,7 +206,7 @@ resource "aws_security_group_rule" "ProxySGEgress" {
   
 }
 
-#Security Group for the load balancer
+#Load Balancer Security Group
 resource "aws_security_group" "ALBSG" {
     vpc_id = aws_vpc.Vpc.id
     description = "Security Group for ALB"
@@ -212,7 +215,6 @@ resource "aws_security_group" "ALBSG" {
     }  
 }
 
-#To Allow Http reqs to the load balancer
 resource "aws_security_group_rule" "ALBSGIngress" {
   security_group_id = aws_security_group.ALBSG.id
   type = "ingress"
@@ -223,7 +225,6 @@ resource "aws_security_group_rule" "ALBSGIngress" {
   
 }
 
-#To Allow load balancer to send all the outbound traffic to internet
 resource "aws_security_group_rule" "ALBSGEgress" {
   security_group_id = aws_security_group.ALBSG.id
   type        = "egress"

@@ -6,6 +6,14 @@ variable "vpcCidr" {
     type = string  
 }
 
+variable "NoOfSubnets" {
+    type = number
+}
+
+variable "SubnetCidrBits" {
+    type = number
+}
+
 variable "env" {
     type = string
 }
