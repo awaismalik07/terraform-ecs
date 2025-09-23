@@ -200,3 +200,33 @@ resource "aws_security_group_rule" "ProxySGEgress" {
   
 }
 
+#Security Group for the load balancer
+resource "aws_security_group" "ALBSG" {
+    vpc_id = aws_vpc.Vpc.id
+    description = "Security Group for ALB"
+    tags = {
+      Name = "${var.owner}-${var.env}-ALB-SG"
+    }  
+}
+
+#To Allow Http reqs to the load balancer
+resource "aws_security_group_rule" "ALBSGIngress" {
+  security_group_id = aws_security_group.ALBSG.id
+  type = "ingress"
+  protocol = "tcp"
+  from_port = 80
+  to_port = 80
+  cidr_blocks = ["0.0.0.0/0"]
+  
+}
+
+#To Allow load balancer to send all the outbound traffic to internet
+resource "aws_security_group_rule" "ALBSGEgress" {
+  security_group_id = aws_security_group.ALBSG.id
+  type        = "egress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
